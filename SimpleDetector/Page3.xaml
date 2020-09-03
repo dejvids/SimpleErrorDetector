@@ -1,0 +1,153 @@
+﻿<Page x:Class="SimpleDetector.Page3"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SimpleDetector"
+      xmlns:conv="clr-namespace:SimpleDetector.Converters"
+      mc:Ignorable="d" 
+      d:DesignHeight="550" d:DesignWidth="800"
+      Title="Page3">
+    <Page.Resources>
+        <conv:EnumToDisplayConverter x:Key="enumConverter"/>
+        <conv:BoolToBitConverter x:Key="boolToBitConverter"/>
+        <conv:StatusToColorConverter x:Key="statusToColorConverter"/>
+        <conv:BoolToVisibilityConverter x:Key="boolToVisibleConverter"/>
+        <conv:NumberToLabelConverter x:Key="numberToLabelConverter"/>
+    </Page.Resources>
+    <Grid Background="White">
+        <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <Label x:Name="label" Content="Podaj ciąg znaków" Style="{StaticResource stdLabel}"/>
+                <TextBox x:Name="inputTxt" Height="23" TextWrapping="NoWrap" Text="" Margin="5,0,5,5"/>
+                <Button x:Name="button" Content="Zakoduj" Click="Button_Click" Margin="5,0,5,5" Style="{StaticResource stdButton}"/>
+                <Label x:Name="label2" Content="Bity wejściowe:" Style="{StaticResource stdLabel}"/>
+                <TextBox x:Name="binaryInputTxt" Height="23" TextWrapping="NoWrap" AcceptsReturn="False" Text="" Margin="5,0,5,5" IsReadOnly="True"/>
+                <Label x:Name="label1" Content="Bity zakodowane:" Style="{StaticResource stdLabel}"/>
+                <TextBox x:Name="encodedTxt" Height="23" TextWrapping="NoWrap" Text="" Margin="5,0,5,5" IsReadOnly="True"/>
+                <Label  Content="Dane zakłócone" Style="{StaticResource stdLabel}"/>
+                <TextBox x:Name="disturbedTxt" Height="23" TextWrapping="NoWrap" Text="" Margin="5,0,5,5" IsReadOnly="True"/>
+
+                <ListBox x:Name="DisturbedBitsBox" 
+                     Margin="5,0,5,5" 
+                     SelectionChanged="DisturbedBitsBox_SelectionChanged">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel IsItemsHost="True" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock MouseDown="TextBlock_MouseDown" 
+                                       HorizontalAlignment="Stretch"
+                                       Text="{Binding Path=Value, Converter={StaticResource boolToBitConverter}}" 
+                                       ToolTip="{Binding Label}"
+                                       Visibility="{Binding IsSeparator, Converter={StaticResource boolToVisibleConverter}}" 
+                                       Background="{Binding Path=Status, Converter={StaticResource statusToColorConverter}}" 
+                                       Padding="5" Margin="0"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="Red"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+                <Button x:Name="DecodeBtn" Content="Zdekoduj" Click="DecodeBtn_Click" Style="{StaticResource stdButton}" Margin="5,0,5,5"/>
+
+                <Label x:Name="label4" Content="Odzyskane bity" Style="{StaticResource stdLabel}"/>
+                <TextBox x:Name="recivedBitsTxt" Height="23" TextWrapping="NoWrap" Text="" Margin="5,0,5,5" IsReadOnly="True"/>
+                <Label x:Name="label3" Content="Odzyskany ciąg znaków:" Style="{StaticResource stdLabel}"/>
+                <TextBox x:Name="recivedTxt" Height="23" TextWrapping="NoWrap" Text="" Margin="5,0,5,5" IsReadOnly="True"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0"  Content="Błąd na pozycji:" Style="{StaticResource stdLabel}"/>
+                    <TextBox Grid.Column="1" x:Name="errorsNumberTxt" Height="23" TextWrapping="NoWrap" Text="" Margin="5,0,5,5" IsReadOnly="True"/>
+                    <Label Grid.Column="2"  Content="Użyte bity kontrolne:" Style="{StaticResource stdLabel}"/>
+                    <TextBox Grid.Column="3" x:Name="controBitsTxt" Height="23" TextWrapping="NoWrap" Text="" Margin="5,0,5,5" IsReadOnly="True"/>
+                </Grid>
+                <Label  Content="Po korekcji" Style="{StaticResource stdLabel}"/>
+                <ListBox x:Name="ErrorsBx" Margin="5,0,5,5">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel IsItemsHost="True" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock HorizontalAlignment="Stretch" Text="{Binding Path=Value, Converter={StaticResource boolToBitConverter}}" Visibility="{Binding IsSeparator,Converter={StaticResource boolToVisibleConverter}}" Background="{Binding Path=Status, Converter={StaticResource statusToColorConverter}}" Padding="5" Margin="0"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+                <GroupBox Header="Legenda" Margin="5,0,5,5">
+                    <Grid Margin="0,10,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label x:Name="okBitsLbl" Style="{StaticResource stdLabel}" HorizontalAlignment="Right"/>
+                        <Rectangle Grid.Row="0" Grid.Column="1" Width="20" Height="20" Fill="#42ab2a"/>
+                        <Label Grid.Row="0" Grid.Column="2" Content="Bity poprawne " Style="{StaticResource stdLabel}"/>
+
+                        <Label Grid.Row="1" x:Name="controlBitsLbl" Style="{StaticResource stdLabel}" HorizontalAlignment="Right"/>
+                        <Rectangle Grid.Row="1" Grid.Column="1" Width="20" Height="20" Fill="#4563CC" />
+                        <Label Grid.Row="1" Grid.Column="2" Content="Poprawne bity kontrolne" Style="{StaticResource stdLabel}"/>
+
+                        <Label Grid.Row="2" x:Name="fixedBitsLbl" Style="{StaticResource stdLabel}" HorizontalAlignment="Right"/>
+                        <Rectangle Grid.Row="2" Grid.Column="1" Width="20" Height="20" Fill="#294F43"/>
+                        <Label Grid.Row="2" Grid.Column="2" Content="Błąd skorygowane" Style="{StaticResource stdLabel}"/>
+
+                        <Label Grid.Row="3" x:Name="notDetectdLbl" Style="{StaticResource stdLabel}" HorizontalAlignment="Right"/>
+                        <Rectangle Grid.Row="3" Grid.Column="1" Width="20" Height="20" Fill="#D63220"/>
+                        <Label Grid.Row="3" Grid.Column="2" Content="Błędy niewykryte" Style="{StaticResource stdLabel}"/>
+
+
+                        <Label Grid.Row="4" x:Name="fixedControlLbl" Style="{StaticResource stdLabel}" HorizontalAlignment="Right"/>
+                        <Rectangle Grid.Row="4" Grid.Column="1" Width="20" Height="20" Fill="#242D72"/>
+                        <Label Grid.Row="4" Grid.Column="2" Content="Skorygowany bit kontrolny" Style="{StaticResource stdLabel}"/>
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+
+</Page>

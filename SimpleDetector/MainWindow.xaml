@@ -1,0 +1,22 @@
+﻿<Window x:Class="SimpleDetector.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleDetector"
+        mc:Ignorable="d"
+        Title="Detekcja i korekcja błędów" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="7*" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Height="40">
+            <Button x:Name="button" Content="Bit parzystości" Width="100" Click="Button_Click" Margin="5,5,5,0" />
+            <Button x:Name="button1" Content="CRC" Width="100" Click="Button1_Click" Margin="0,5,5,0"/>
+            <Button x:Name="button2" Content="Kodowanie Hamminga" Width="150" Click="Button2_Click" Margin="0,5,5,0"/>
+        </StackPanel>
+        <Frame x:Name="Main"  Grid.Row="1" NavigationUIVisibility="Hidden" Margin="0,5,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+
+    </Grid>
+</Window>
